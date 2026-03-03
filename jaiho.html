@@ -1,0 +1,3189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rural Learning Quest - Complete Edition</title>
+    <style>
+        :root {
+            --bg-gradient-start: #667eea;
+            --bg-gradient-end: #764ba2;
+            --card-bg: white;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --text-tertiary: #999;
+            --border-color: #e0e0e0;
+            --shadow: rgba(0,0,0,0.1);
+            --notification-bg: white;
+            --leaderboard-bg: #f8f9fa;
+            --leaderboard-hover: #e9ecef;
+        }
+
+        [data-theme="dark"] {
+            --bg-gradient-start: #1a1a2e;
+            --bg-gradient-end: #16213e;
+            --card-bg: #0f3460;
+            --text-primary: #e8e8e8;
+            --text-secondary: #b8b8b8;
+            --text-tertiary: #888;
+            --border-color: #2d4059;
+            --shadow: rgba(0,0,0,0.3);
+            --notification-bg: #0f3460;
+            --leaderboard-bg: #1a2a44;
+            --leaderboard-hover: #243447;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            min-height: 100vh;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .auth-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px var(--shadow);
+            max-width: 450px;
+            width: 100%;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .auth-logo {
+            text-align: center;
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .auth-title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .auth-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .auth-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .auth-divider {
+            text-align: center;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .auth-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--border-color);
+        }
+
+        .auth-divider span {
+            background: var(--card-bg);
+            padding: 0 15px;
+            position: relative;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .auth-link {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .auth-link a {
+            color: #667eea;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .password-toggle {
+            position: relative;
+        }
+
+        .password-toggle-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            color: var(--text-secondary);
+            padding: 5px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            background: var(--leaderboard-bg);
+            color: var(--text-primary);
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .nav-tab:hover {
+            transform: translateY(-2px);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .user-profile-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            transition: transform 0.3s;
+            font-size: 14px;
+        }
+
+        .user-profile-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .class-selector {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.3s;
+            font-size: 14px;
+        }
+
+        .class-selector:hover {
+            transform: scale(1.05);
+        }
+
+        .icon-btn {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+            position: relative;
+            font-size: 14px;
+        }
+
+        .icon-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 3px 10px var(--shadow);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ef4444;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .level-badge {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .xp-bar {
+            width: 150px;
+            height: 20px;
+            background: var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .xp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .xp-text {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+
+        h2 {
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            font-size: clamp(18px, 4vw, 24px);
+        }
+
+        h3 {
+            color: var(--text-primary);
+            font-size: clamp(16px, 3vw, 20px);
+        }
+
+        p {
+            color: var(--text-secondary);
+            font-size: clamp(14px, 2.5vw, 16px);
+        }
+
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .subject-card {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .subject-card.math { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .subject-card.science { background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); color: white; }
+        .subject-card.language { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); }
+        .subject-card.social { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); }
+        .subject-card.english { background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%); }
+        .subject-card.hindi { background: linear-gradient(135deg, #ffa585 0%, #ffeda0 100%); }
+        .subject-card.evs { background: linear-gradient(135deg, #8fd3f4 0%, #84fab0 100%); }
+        .subject-card.computer { background: linear-gradient(135deg, #d299c2 0%, #fef9d7 100%); }
+        .subject-card.physics { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .subject-card.chemistry { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; }
+        .subject-card.biology { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+
+        .subject-icon {
+            font-size: clamp(30px, 6vw, 40px);
+            margin-bottom: 10px;
+        }
+
+        .subject-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: inherit;
+            font-size: clamp(14px, 2.5vw, 16px);
+        }
+
+        .subject-progress {
+            font-size: clamp(11px, 2vw, 12px);
+            opacity: 0.8;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-top: 10px;
+            font-size: clamp(13px, 2.5vw, 16px);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            color: var(--text-primary);
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 900px;
+            width: 90%;
+            text-align: center;
+            animation: popIn 0.3s ease;
+            margin: 20px auto;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .study-material-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            text-align: left;
+        }
+
+        .study-item {
+            background: var(--leaderboard-bg);
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 4px solid #667eea;
+        }
+
+        .study-item:hover {
+            background: var(--leaderboard-hover);
+            transform: translateX(5px);
+        }
+
+        .quiz-container {
+            text-align: left;
+        }
+
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .question-text {
+            font-size: clamp(16px, 4vw, 22px);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 30px;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .option-btn {
+            background: var(--leaderboard-bg);
+            border: 3px solid var(--border-color);
+            padding: 20px;
+            border-radius: 12px;
+            font-size: clamp(14px, 3vw, 18px);
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            color: var(--text-primary);
+            font-weight: 600;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background: var(--leaderboard-hover);
+            border-color: #667eea;
+            transform: scale(1.05);
+        }
+
+        .option-btn.correct {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+            animation: correctAnswer 0.5s ease;
+        }
+
+        .option-btn.incorrect {
+            background: #f44336;
+            color: white;
+            border-color: #f44336;
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes correctAnswer {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        .game-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+
+        .game-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 10px 30px var(--shadow);
+        }
+
+        .game-icon {
+            font-size: clamp(40px, 8vw, 50px);
+            margin-bottom: 15px;
+        }
+
+        .notes-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 20px;
+        }
+
+        .notes-sidebar {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px var(--shadow);
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .note-item {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .note-item:hover, .note-item.active {
+            background: var(--leaderboard-bg);
+        }
+
+        .notes-editor {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+
+        .editor-title {
+            width: 100%;
+            font-size: clamp(18px, 4vw, 24px);
+            font-weight: 700;
+            border: none;
+            background: transparent;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            outline: none;
+        }
+
+        .editor-content {
+            width: 100%;
+            min-height: 400px;
+            border: 2px solid var(--border-color);
+            background: var(--leaderboard-bg);
+            color: var(--text-primary);
+            padding: 15px;
+            border-radius: 10px;
+            font-size: clamp(14px, 2.5vw, 16px);
+            line-height: 1.6;
+            resize: vertical;
+            outline: none;
+        }
+
+        .todo-input {
+            width: 70%;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-primary);
+            font-size: clamp(14px, 2.5vw, 16px);
+        }
+
+        .todo-list {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .todo-item {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 2px 8px var(--shadow);
+            flex-wrap: wrap;
+        }
+
+        .todo-item.completed .todo-text {
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+
+        .settings-grid {
+            display: grid;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .setting-item {
+            background: var(--leaderboard-bg);
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .setting-label {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .setting-description {
+            font-size: clamp(11px, 2vw, 13px);
+            color: var(--text-secondary);
+        }
+
+        .class-selection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .class-option {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            font-weight: bold;
+            font-size: clamp(14px, 3vw, 18px);
+        }
+
+        .class-option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .class-option.selected {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            box-shadow: 0 8px 20px rgba(240, 147, 251, 0.4);
+        }
+
+        .time-display {
+            font-size: clamp(32px, 8vw, 48px);
+            font-weight: bold;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 20px 0;
+        }
+
+        .notification-panel {
+            position: fixed;
+            right: -400px;
+            top: 0;
+            width: 400px;
+            height: 100vh;
+            background: var(--card-bg);
+            box-shadow: -5px 0 15px var(--shadow);
+            z-index: 1999;
+            padding: 20px;
+            overflow-y: auto;
+            transition: right 0.3s ease;
+        }
+
+        .notification-panel.show {
+            right: 0;
+        }
+
+        .notification-item {
+            background: var(--leaderboard-bg);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            border-left: 4px solid #667eea;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .notification-item:hover {
+            background: var(--leaderboard-hover);
+            transform: translateX(-5px);
+        }
+
+        .notification-item.unread {
+            border-left-color: #ef4444;
+            background: linear-gradient(90deg, rgba(239, 68, 68, 0.1) 0%, var(--leaderboard-bg) 100%);
+        }
+
+        .notification-time {
+            font-size: clamp(10px, 2vw, 12px);
+            color: var(--text-tertiary);
+            margin-top: 5px;
+        }
+
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .clear-all-btn {
+            background: var(--leaderboard-bg);
+            color: var(--text-primary);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: clamp(11px, 2vw, 12px);
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .clear-all-btn:hover {
+            background: var(--leaderboard-hover);
+        }
+
+        .leaderboard-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .leaderboard-list {
+            list-style: none;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: var(--leaderboard-bg);
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .leaderboard-item:hover {
+            background: var(--leaderboard-hover);
+            transform: translateX(5px);
+        }
+
+        .leaderboard-item.current-user {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            font-weight: bold;
+        }
+
+        .rank {
+            font-size: clamp(18px, 4vw, 24px);
+            font-weight: bold;
+            min-width: 40px;
+            text-align: center;
+            color: var(--text-primary);
+        }
+
+        .rank.gold { color: #FFD700; }
+        .rank.silver { color: #C0C0C0; }
+        .rank.bronze { color: #CD7F32; }
+
+        .player-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: clamp(14px, 3vw, 18px);
+            flex-shrink: 0;
+        }
+
+        .player-info {
+            flex: 1;
+        }
+
+        .player-name {
+            font-weight: 600;
+            margin-bottom: 3px;
+            color: var(--text-primary);
+            font-size: clamp(14px, 2.5vw, 16px);
+        }
+
+        .player-score {
+            font-weight: bold;
+            color: #667eea;
+            font-size: clamp(14px, 3vw, 18px);
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 2px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-primary);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: clamp(12px, 2.5vw, 14px);
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .badge-card {
+            background: var(--leaderboard-bg);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s;
+            border: 2px solid var(--border-color);
+        }
+
+        .badge-card.earned {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            border-color: #fdcb6e;
+            box-shadow: 0 4px 15px rgba(253, 203, 110, 0.3);
+        }
+
+        .badge-card.locked {
+            opacity: 0.5;
+            filter: grayscale(100%);
+        }
+
+        .badge-icon {
+            font-size: clamp(30px, 6vw, 40px);
+            margin-bottom: 8px;
+        }
+
+        .badge-name {
+            font-weight: 600;
+            font-size: clamp(11px, 2vw, 12px);
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .badge-description {
+            font-size: clamp(9px, 1.8vw, 10px);
+            color: var(--text-secondary);
+        }
+
+        .crossword-grid {
+            display: grid;
+            gap: 2px;
+            margin: 20px auto;
+            width: fit-content;
+        }
+
+        .crossword-cell {
+            width: clamp(30px, 8vw, 40px);
+            height: clamp(30px, 8vw, 40px);
+            border: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: clamp(14px, 3vw, 18px);
+            background: white;
+            color: #333;
+        }
+
+        .crossword-cell.black {
+            background: #333;
+            border-color: #333;
+        }
+
+        .crossword-cell input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            text-align: center;
+            font-size: clamp(14px, 3vw, 18px);
+            font-weight: bold;
+            text-transform: uppercase;
+            background: transparent;
+        }
+
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            max-width: 400px;
+            margin: 20px auto;
+        }
+
+        .memory-card {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(30px, 6vw, 40px);
+            cursor: pointer;
+            transition: transform 0.3s;
+            position: relative;
+        }
+
+        .memory-card:hover {
+            transform: scale(1.05);
+        }
+
+        .memory-card .card-back {
+            display: none;
+        }
+
+        .memory-card.flipped .card-back {
+            display: block;
+        }
+
+        .memory-card.matched {
+            background: #4CAF50;
+            cursor: default;
+        }
+
+        .puzzle-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            max-width: 400px;
+            margin: 20px auto;
+        }
+
+        .puzzle-piece {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(24px, 6vw, 32px);
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .puzzle-piece:hover {
+            transform: scale(1.05);
+        }
+
+        .puzzle-piece.empty {
+            background: transparent;
+            border: 2px dashed var(--border-color);
+        }
+
+        .spelling-word {
+            font-size: clamp(24px, 6vw, 36px);
+            font-weight: bold;
+            margin: 30px 0;
+            color: #667eea;
+            letter-spacing: 5px;
+        }
+
+        .spelling-input {
+            font-size: clamp(18px, 4vw, 24px);
+            padding: 15px 30px;
+            border: 3px solid var(--border-color);
+            border-radius: 10px;
+            text-align: center;
+            width: 80%;
+            max-width: 400px;
+            background: var(--card-bg);
+            color: var(--text-primary);
+        }
+
+        .game-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .game-stat {
+            text-align: center;
+        }
+
+        .game-stat-value {
+            font-size: clamp(24px, 6vw, 32px);
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .game-stat-label {
+            font-size: clamp(12px, 2.5vw, 14px);
+            color: var(--text-secondary);
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: #667eea;
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        .select-input {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 2px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: clamp(12px, 2.5vw, 14px);
+        }
+
+        /* Responsive Media Queries */
+        @media (max-width: 1200px) {
+            .container {
+                max-width: 100%;
+            }
+            
+            header {
+                padding: 15px 20px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-tabs {
+                order: 3;
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .user-info {
+                order: 2;
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .logo {
+                order: 1;
+                width: 100%;
+                justify-content: center;
+            }
+            
+            header {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .auth-card {
+                padding: 30px 20px;
+            }
+            
+            .modal-content {
+                padding: 20px;
+                width: 95%;
+            }
+            
+            .notes-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .notes-sidebar {
+                max-height: 300px;
+            }
+            
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .notification-panel {
+                width: 100%;
+                right: -100%;
+            }
+            
+            .xp-bar {
+                width: 120px;
+            }
+            
+            .subjects-grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 10px;
+            }
+            
+            .games-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+            
+            .badges-grid {
+                grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            }
+            
+            .leaderboard-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .todo-input {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            
+            .card {
+                padding: 15px;
+            }
+            
+            .nav-tab {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .auth-logo {
+                font-size: 36px;
+            }
+            
+            .auth-title {
+                font-size: 22px;
+            }
+            
+            .logo {
+                font-size: 18px;
+            }
+            
+            .user-profile-btn,
+            .class-selector,
+            .icon-btn,
+            .level-badge {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+            
+            .subjects-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .class-selection-grid {
+                grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            }
+            
+            .memory-grid {
+                gap: 5px;
+            }
+            
+            .game-stats {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 360px) {
+            body {
+                padding: 5px;
+            }
+            
+            .card {
+                padding: 10px;
+            }
+            
+            header {
+                padding: 10px;
+            }
+            
+            .modal-content {
+                padding: 15px;
+            }
+        }
+
+        /* Landscape orientation adjustments */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .auth-container {
+                padding: 10px;
+            }
+            
+            .auth-card {
+                padding: 20px;
+            }
+            
+            .modal-content {
+                padding: 15px;
+                max-height: 95vh;
+            }
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                background: white;
+            }
+            
+            header,
+            .nav-tabs,
+            .user-info,
+            .btn,
+            .modal,
+            .notification-panel {
+                display: none;
+            }
+            
+            .card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Authentication Screen -->
+    <div id="authScreen" class="auth-container">
+        <!-- Login Form -->
+        <div id="loginForm" class="auth-card">
+            <div class="auth-logo">🎓</div>
+            <h1 class="auth-title">Welcome Back!</h1>
+            <p class="auth-subtitle">Continue your learning journey</p>
+            
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label class="form-label">Username or Email</label>
+                    <input type="text" class="form-input" id="loginUsername" required>
+                </div>
+                
+                <div class="form-group password-toggle">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" id="loginPassword" required>
+                    <button type="button" class="password-toggle-btn" onclick="togglePassword('loginPassword')">👁️</button>
+                </div>
+                
+                <button type="submit" class="auth-btn">Sign In</button>
+            </form>
+            
+            <div class="auth-divider">
+                <span>OR</span>
+            </div>
+            
+            <div class="auth-link">
+                Don't have an account? <a onclick="showRegister()">Sign Up</a>
+            </div>
+        </div>
+        
+        <!-- Register Form -->
+        <div id="registerForm" class="auth-card hidden">
+            <div class="auth-logo">🎓</div>
+            <h1 class="auth-title">Create Account</h1>
+            <p class="auth-subtitle">Start your learning journey today!</p>
+            
+            <form onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-input" id="registerName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input type="text" class="form-input" id="registerUsername" required minlength="3">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" id="registerEmail" required>
+                </div>
+                
+                <div class="form-group password-toggle">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" id="registerPassword" required minlength="6">
+                    <button type="button" class="password-toggle-btn" onclick="togglePassword('registerPassword')">👁️</button>
+                </div>
+                
+                <div class="form-group password-toggle">
+                    <label class="form-label">Confirm Password</label>
+                    <input type="password" class="form-input" id="registerConfirmPassword" required>
+                    <button type="button" class="password-toggle-btn" onclick="togglePassword('registerConfirmPassword')">👁️</button>
+                </div>
+                
+                <button type="submit" class="auth-btn">Create Account</button>
+            </form>
+            
+            <div class="auth-divider">
+                <span>OR</span>
+            </div>
+            
+            <div class="auth-link">
+                Already have an account? <a onclick="showLogin()">Sign In</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application (hidden initially) -->
+    <div id="mainApp" class="container hidden">
+        <header>
+            <div class="logo">
+                🎓 Rural Learning Quest
+            </div>
+            
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="switchTab('dashboard')">📊 Dashboard</button>
+                <button class="nav-tab" onclick="switchTab('subjects')">📚 Subjects</button>
+                <button class="nav-tab" onclick="switchTab('study')">📖 Study Notes</button>
+                <button class="nav-tab" onclick="switchTab('leaderboard')">🏆 Leaderboard</button>
+                <button class="nav-tab" onclick="switchTab('games')">🎮 Games</button>
+                <button class="nav-tab" onclick="switchTab('badges')">🏅 Badges</button>
+                <button class="nav-tab" onclick="switchTab('notes')">📝 My Notes</button>
+                <button class="nav-tab" onclick="switchTab('todo')">✓ To-Do</button>
+                <button class="nav-tab" onclick="switchTab('tracker')">⏱️ Time Tracker</button>
+            </div>
+            
+            <div class="user-info">
+                <button class="user-profile-btn" onclick="showProfile()">
+                    👤 <span id="currentUserName">User</span>
+                </button>
+                <button class="icon-btn" onclick="toggleNotifications()">
+                    🔔
+                    <span class="notification-badge" id="notifCount">0</span>
+                </button>
+                <button class="icon-btn" onclick="showSettings()">⚙️ Settings</button>
+                <div class="class-selector" onclick="showClassSelector()" id="classDisplay">
+                    📚 Class 1-2
+                </div>
+                <div class="level-badge">
+                    ⭐ Level <span id="userLevel">5</span>
+                </div>
+                <div>
+                    <div class="xp-text">XP: <span id="currentXP">450</span>/<span id="maxXP">600</span></div>
+                    <div class="xp-bar">
+                        <div class="xp-fill" id="xpFill" style="width: 75%;">75%</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Section -->
+        <section class="content-section active" id="dashboard">
+            <div class="main-content">
+                <div class="card">
+                    <h2>📊 Your Progress</h2>
+                    <div class="subjects-grid" id="dashboardSubjects"></div>
+                </div>
+                <div class="card">
+                    <h2>🔥 Streak: <span id="streak">7</span> days</h2>
+                    <h2>⏰ Today: <span id="todayTime">0h 0m</span></h2>
+                    <h2>🎯 Total XP: <span id="totalXP">720</span></h2>
+                </div>
+            </div>
+        </section>
+
+        <!-- Subjects Section -->
+        <section class="content-section" id="subjects">
+            <div class="card">
+                <h2>📚 My Subjects - Play Quiz Games!</h2>
+                <p style="margin-bottom: 20px;">Click on any subject to start a fun quiz game!</p>
+                <div class="subjects-grid" id="subjectsGrid"></div>
+            </div>
+        </section>
+
+        <!-- Study Material Section -->
+        <section class="content-section" id="study">
+            <div class="card">
+                <h2>📖 Study Notes for All Subjects</h2>
+                <div class="study-material-list" id="studyMaterialList"></div>
+            </div>
+        </section>
+
+        <!-- Leaderboard Section -->
+        <section class="content-section" id="leaderboard">
+            <div class="card">
+                <h2>🏆 Leaderboard - Top Performers</h2>
+                <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                    <button class="filter-btn active" onclick="filterLeaderboard('global')">🌍 Global</button>
+                    <button class="filter-btn" onclick="filterLeaderboard('class')">📚 My Class</button>
+                    <button class="filter-btn" onclick="filterLeaderboard('weekly')">📅 This Week</button>
+                    <button class="filter-btn" onclick="filterLeaderboard('daily')">⏰ Today</button>
+                </div>
+                <div class="leaderboard-container">
+                    <div class="card">
+                        <h3>🏅 Top Learners</h3>
+                        <ul class="leaderboard-list" id="leaderboardList"></ul>
+                    </div>
+                    <div class="card">
+                        <h3>📊 Your Stats</h3>
+                        <div style="text-align: center; padding: 20px;">
+                            <div style="font-size: 48px; margin: 20px 0;">🎯</div>
+                            <div style="font-size: 32px; font-weight: bold; color: #667eea; margin: 10px 0;" id="yourRank">#4</div>
+                            <div style="color: var(--text-secondary); margin-bottom: 20px;">Your Rank</div>
+                            <div style="background: var(--leaderboard-bg); padding: 15px; border-radius: 10px; margin-top: 20px;">
+                                <div style="font-size: 24px; font-weight: bold; color: #667eea;" id="yourTotalXP">720</div>
+                                <div style="color: var(--text-secondary); font-size: 14px;">Total XP</div>
+                            </div>
+                            <div style="background: var(--leaderboard-bg); padding: 15px; border-radius: 10px; margin-top: 15px;">
+                                <div style="font-size: 24px; font-weight: bold; color: #f093fb;" id="quizzesCompleted">12</div>
+                                <div style="color: var(--text-secondary); font-size: 14px;">Quizzes Completed</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Games Section -->
+        <section class="content-section" id="games">
+            <div class="card">
+                <h2>🎮 Learning Games</h2>
+                <div class="games-grid">
+                    <div class="game-card" onclick="openGame('crossword')">
+                        <div class="game-icon">🔤</div>
+                        <div style="font-weight: 600; font-size: 18px; color: var(--text-primary);">Crossword Puzzle</div>
+                    </div>
+                    <div class="game-card" onclick="openGame('puzzle')">
+                        <div class="game-icon">🧩</div>
+                        <div style="font-weight: 600; font-size: 18px; color: var(--text-primary);">Picture Puzzle</div>
+                    </div>
+                    <div class="game-card" onclick="openGame('spelling')">
+                        <div class="game-icon">✏️</div>
+                        <div style="font-weight: 600; font-size: 18px; color: var(--text-primary);">Spelling Bee</div>
+                    </div>
+                    <div class="game-card" onclick="openGame('memory')">
+                        <div class="game-icon">🧠</div>
+                        <div style="font-weight: 600; font-size: 18px; color: var(--text-primary);">Memory Game</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Badges Section -->
+        <section class="content-section" id="badges">
+            <div class="card">
+                <h2>🏅 Your Achievements</h2>
+                <p style="margin-bottom: 20px;">Earn badges by completing challenges and reaching milestones!</p>
+                <div class="badges-grid" id="badgesGrid"></div>
+            </div>
+        </section>
+
+        <!-- Notes Section -->
+        <section class="content-section" id="notes">
+            <div class="card">
+                <h2>📝 My Personal Notes <button class="btn" onclick="createNewNote()">+ New Note</button></h2>
+                <div class="notes-container">
+                    <div class="notes-sidebar">
+                        <ul style="list-style: none;" id="notesList"></ul>
+                    </div>
+                    <div class="notes-editor">
+                        <input type="text" class="editor-title" id="noteTitle" placeholder="Note Title...">
+                        <textarea class="editor-content" id="noteContent" placeholder="Start writing your notes here..."></textarea>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Todo Section -->
+        <section class="content-section" id="todo">
+            <div class="card">
+                <h2>✓ To-Do List</h2>
+                <div>
+                    <input type="text" class="todo-input" id="todoInput" placeholder="Add a new task...">
+                    <button class="btn" onclick="addTodo()">Add Task</button>
+                </div>
+                <ul class="todo-list" id="todoList"></ul>
+            </div>
+        </section>
+
+        <!-- Time Tracker Section -->
+        <section class="content-section" id="tracker">
+            <div class="card">
+                <h2>⏱️ Time Tracker</h2>
+                <div class="time-display" id="timeDisplay">00:00:00</div>
+                <p style="text-align: center; color: var(--text-secondary);">Time spent today on the platform</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal" id="profileModal">
+        <div class="modal-content">
+            <h2>👤 User Profile</h2>
+            <div style="text-align: left; margin: 20px 0;">
+                <div class="setting-item" style="margin-bottom: 15px;">
+                    <div class="setting-label">
+                        <strong>Name</strong>
+                        <span class="setting-description" id="profileName">Loading...</span>
+                    </div>
+                </div>
+                <div class="setting-item" style="margin-bottom: 15px;">
+                    <div class="setting-label">
+                        <strong>Username</strong>
+                        <span class="setting-description" id="profileUsername">Loading...</span>
+                    </div>
+                </div>
+                <div class="setting-item" style="margin-bottom: 15px;">
+                    <div class="setting-label">
+                        <strong>Email</strong>
+                        <span class="setting-description" id="profileEmail">Loading...</span>
+                    </div>
+                </div>
+                <div class="setting-item" style="margin-bottom: 15px;">
+                    <div class="setting-label">
+                        <strong>Member Since</strong>
+                        <span class="setting-description" id="profileJoinDate">Loading...</span>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-danger" onclick="handleLogout()">🚪 Logout</button>
+            <button class="btn btn-secondary" onclick="closeModal('profileModal')" style="margin-left: 10px;">Close</button>
+        </div>
+    </div>
+
+    <div class="modal" id="classModal">
+        <div class="modal-content">
+            <h2>Select Your Class</h2>
+            <div class="class-selection-grid">
+                <div class="class-option" onclick="selectClass('1-2')">Class 1-2</div>
+                <div class="class-option" onclick="selectClass('3-5')">Class 3-5</div>
+                <div class="class-option" onclick="selectClass('6-8')">Class 6-8</div>
+                <div class="class-option" onclick="selectClass('9-10')">Class 9-10</div>
+                <div class="class-option" onclick="selectClass('11-12')">Class 11-12</div>
+            </div>
+            <button class="btn" onclick="closeModal('classModal')">Close</button>
+        </div>
+    </div>
+
+    <div class="modal" id="quizModal">
+        <div class="modal-content">
+            <div id="quizContainer"></div>
+        </div>
+    </div>
+
+    <div class="modal" id="studyModal">
+        <div class="modal-content">
+            <div id="studyContent"></div>
+            <button class="btn" onclick="closeModal('studyModal')">Close</button>
+        </div>
+    </div>
+
+    <div class="modal" id="gameModal">
+        <div class="modal-content">
+            <div id="gameContent"></div>
+            <button class="btn" onclick="closeModal('gameModal')">Close</button>
+        </div>
+    </div>
+
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <h2>⚙️ Settings</h2>
+            <div class="settings-grid">
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <strong>Change Class</strong>
+                        <span class="setting-description">Select your current class level</span>
+                    </div>
+                    <button class="btn" onclick="showClassSelector()">Select Class</button>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <strong>Dark Mode</strong>
+                        <span class="setting-description">Switch between light and dark theme</span>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="darkModeToggle" onchange="toggleTheme()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <strong>Sound Effects</strong>
+                        <span class="setting-description">Enable or disable game sounds</span>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="soundToggle" checked onchange="toggleSound()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <strong>Notifications</strong>
+                        <span class="setting-description">Receive achievement and reminder notifications</span>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="notifToggle" checked onchange="toggleNotifSettings()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <strong>Auto-Save Notes</strong>
+                        <span class="setting-description">Automatically save your notes while typing</span>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="autoSaveToggle" checked onchange="toggleAutoSave()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <strong>Language</strong>
+                        <span class="setting-description">Choose your preferred language</span>
+                    </div>
+                    <select class="select-input" id="languageSelect" onchange="changeLanguage()">
+                        <option value="en">English</option>
+                        <option value="hi">हिंदी (Hindi)</option>
+                        <option value="mixed">Both</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <strong>Game Difficulty</strong>
+                        <span class="setting-description">Adjust difficulty level for games</span>
+                    </div>
+                    <select class="select-input" id="difficultySelect" onchange="changeDifficulty()">
+                        <option value="easy">Easy</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <strong>Study Reminders</strong>
+                        <span class="setting-description">Set daily study time reminders</span>
+                    </div>
+                    <select class="select-input" id="reminderSelect" onchange="setReminder()">
+                        <option value="off">Off</option>
+                        <option value="morning">Morning (9 AM)</option>
+                        <option value="afternoon">Afternoon (2 PM)</option>
+                        <option value="evening" selected>Evening (6 PM)</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <strong>Font Size</strong>
+                        <span class="setting-description">Adjust text size for better readability</span>
+                    </div>
+                    <select class="select-input" id="fontSizeSelect" onchange="changeFontSize()">
+                        <option value="small">Small</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="large">Large</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <strong>Reset Progress</strong>
+                        <span class="setting-description">Clear all progress and start fresh</span>
+                    </div>
+                    <button class="btn btn-secondary" onclick="resetProgress()">Reset All Data</button>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <strong>Export Data</strong>
+                        <span class="setting-description">Download your notes and progress</span>
+                    </div>
+                    <button class="btn" onclick="exportData()">Export Data</button>
+                </div>
+            </div>
+            <button class="btn" onclick="closeModal('settingsModal')" style="margin-top: 20px;">Close</button>
+        </div>
+    </div>
+
+    <div class="notification-panel" id="notificationPanel">
+        <div class="notification-header">
+            <h2>🔔 Notifications</h2>
+            <button class="clear-all-btn" onclick="clearAllNotifications()">Clear All</button>
+        </div>
+        <div id="notificationsList"></div>
+    </div>
+
+    <script>
+        // Authentication System
+        let users = JSON.parse(localStorage.getItem('users') || '{}');
+        let currentUser = localStorage.getItem('currentUser');
+
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        function showLogin() {
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
+        }
+
+        function showRegister() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.remove('hidden');
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            
+            const user = Object.values(users).find(u => 
+                u.username === username || u.email === username
+            );
+            
+            if (!user) {
+                alert('❌ User not found! Please check your username or sign up.');
+                return;
+            }
+            
+            if (user.password !== password) {
+                alert('❌ Incorrect password! Please try again.');
+                return;
+            }
+            
+            currentUser = user.username;
+            localStorage.setItem('currentUser', currentUser);
+            
+            document.getElementById('authScreen').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            
+            loadUserData();
+            init();
+        }
+
+        function handleRegister(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('registerName').value.trim();
+            const username = document.getElementById('registerUsername').value.trim();
+            const email = document.getElementById('registerEmail').value.trim();
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerConfirmPassword').value;
+            
+            if (username.length < 3) {
+                alert('❌ Username must be at least 3 characters long!');
+                return;
+            }
+            
+            if (users[username]) {
+                alert('❌ Username already exists! Please choose another one.');
+                return;
+            }
+            
+            if (Object.values(users).some(u => u.email === email)) {
+                alert('❌ Email already registered! Please use another email or login.');
+                return;
+            }
+            
+            if (password.length < 6) {
+                alert('❌ Password must be at least 6 characters long!');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert('❌ Passwords do not match!');
+                return;
+            }
+            
+            users[username] = {
+                name: name,
+                username: username,
+                email: email,
+                password: password,
+                joinDate: new Date().toISOString(),
+                gameState: null
+            };
+            
+            localStorage.setItem('users', JSON.stringify(users));
+            alert('✅ Account created successfully! Please login.');
+            showLogin();
+            document.getElementById('loginUsername').value = username;
+        }
+
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                saveUserData();
+                localStorage.removeItem('currentUser');
+                currentUser = null;
+                
+                document.getElementById('authScreen').classList.remove('hidden');
+                document.getElementById('mainApp').classList.add('hidden');
+                showLogin();
+                
+                document.getElementById('loginUsername').value = '';
+                document.getElementById('loginPassword').value = '';
+            }
+        }
+
+        function showProfile() {
+            const user = users[currentUser];
+            if (!user) return;
+            
+            document.getElementById('profileName').textContent = user.name;
+            document.getElementById('profileUsername').textContent = user.username;
+            document.getElementById('profileEmail').textContent = user.email;
+            document.getElementById('profileJoinDate').textContent = new Date(user.joinDate).toLocaleDateString();
+            
+            document.getElementById('profileModal').classList.add('show');
+        }
+
+        function loadUserData() {
+            const user = users[currentUser];
+            if (!user) return;
+            
+            document.getElementById('currentUserName').textContent = user.name.split(' ')[0];
+            
+            if (user.gameState) {
+                gameState = { ...gameState, ...user.gameState };
+            }
+        }
+
+        function saveUserData() {
+            if (!currentUser) return;
+            
+            const user = users[currentUser];
+            if (!user) return;
+            
+            user.gameState = {
+                selectedClass: gameState.selectedClass,
+                level: gameState.level,
+                currentXP: gameState.currentXP,
+                maxXP: gameState.maxXP,
+                totalXP: gameState.totalXP,
+                streak: gameState.streak,
+                notes: gameState.notes,
+                todos: gameState.todos,
+                notifications: gameState.notifications,
+                earnedBadges: gameState.earnedBadges,
+                quizzesCompleted: gameState.quizzesCompleted,
+                theme: gameState.theme,
+                soundEnabled: gameState.soundEnabled,
+                notificationsEnabled: gameState.notificationsEnabled,
+                autoSave: gameState.autoSave,
+                language: gameState.language,
+                difficulty: gameState.difficulty,
+                reminder: gameState.reminder,
+                fontSize: gameState.fontSize
+            };
+            
+            users[currentUser] = user;
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+
+        function checkAuth() {
+            if (currentUser && users[currentUser]) {
+                document.getElementById('authScreen').classList.add('hidden');
+                document.getElementById('mainApp').classList.remove('hidden');
+                loadUserData();
+                return true;
+            } else {
+                document.getElementById('authScreen').classList.remove('hidden');
+                document.getElementById('mainApp').classList.add('hidden');
+                return false;
+            }
+        }
+
+        // Game State
+        let gameState = {
+            selectedClass: '1-2',
+            currentTab: 'dashboard',
+            level: 1,
+            currentXP: 0,
+            maxXP: 100,
+            totalXP: 0,
+            streak: 7,
+            notes: [],
+            todos: [],
+            notifications: [],
+            earnedBadges: [],
+            currentNoteId: null,
+            startTime: Date.now(),
+            theme: 'light',
+            quizzesCompleted: 0,
+            currentLeaderboardFilter: 'global',
+            soundEnabled: true,
+            notificationsEnabled: true,
+            autoSave: true,
+            language: 'en',
+            difficulty: 'medium',
+            reminder: 'evening',
+            fontSize: 'medium'
+        };
+
+        // Badge Definitions
+        const badges = [
+            { id: 'first_quiz', name: 'First Steps', icon: '🎯', description: 'Complete your first quiz', requirement: (state) => state.quizzesCompleted >= 1 },
+            { id: 'quiz_master', name: 'Quiz Master', icon: '🧠', description: 'Complete 10 quizzes', requirement: (state) => state.quizzesCompleted >= 10 },
+            { id: 'quiz_legend', name: 'Quiz Legend', icon: '👑', description: 'Complete 25 quizzes', requirement: (state) => state.quizzesCompleted >= 25 },
+            { id: 'level_5', name: 'Rising Star', icon: '⭐', description: 'Reach level 5', requirement: (state) => state.level >= 5 },
+            { id: 'level_10', name: 'Expert', icon: '🌟', description: 'Reach level 10', requirement: (state) => state.level >= 10 },
+            { id: 'level_20', name: 'Master', icon: '💫', description: 'Reach level 20', requirement: (state) => state.level >= 20 },
+            { id: 'xp_1000', name: 'Dedicated', icon: '🎓', description: 'Earn 1000 total XP', requirement: (state) => state.totalXP >= 1000 },
+            { id: 'xp_5000', name: 'Scholar', icon: '📚', description: 'Earn 5000 total XP', requirement: (state) => state.totalXP >= 5000 },
+            { id: 'perfect_week', name: 'Perfect Week', icon: '🔥', description: '7-day streak', requirement: (state) => state.streak >= 7 },
+            { id: 'month_streak', name: 'Consistency', icon: '💪', description: '30-day streak', requirement: (state) => state.streak >= 30 },
+            { id: 'note_taker', name: 'Note Taker', icon: '📝', description: 'Create 5 notes', requirement: (state) => state.notes.length >= 5 },
+            { id: 'task_manager', name: 'Task Master', icon: '✅', description: 'Complete 20 tasks', requirement: (state) => state.todos.filter(t => t.completed).length >= 20 }
+        ];
+
+        // Leaderboard Data
+        let leaderboardData = {
+            global: [
+                { name: 'Priya Singh', avatar: 'PS', level: 8, totalXP: 1450, class: '6-8' },
+                { name: 'Rahul Kumar', avatar: 'RK', level: 7, totalXP: 1280, class: '6-8' },
+                { name: 'Anita Patel', avatar: 'AP', level: 6, totalXP: 950, class: '3-5' },
+                { name: 'You', avatar: 'YO', level: 5, totalXP: 720, class: '1-2', isCurrentUser: true },
+                { name: 'Meera Sharma', avatar: 'MS', level: 5, totalXP: 680, class: '6-8' }
+            ],
+            class: [],
+            weekly: [
+                { name: 'Priya Singh', avatar: 'PS', level: 8, totalXP: 450, class: '6-8' },
+                { name: 'You', avatar: 'YO', level: 5, totalXP: 380, class: '1-2', isCurrentUser: true }
+            ],
+            daily: [
+                { name: 'You', avatar: 'YO', level: 5, totalXP: 150, class: '1-2', isCurrentUser: true },
+                { name: 'Priya Singh', avatar: 'PS', level: 8, totalXP: 120, class: '6-8' }
+            ]
+        };
+
+        // Subject Data
+        const subjectsByClass = {
+            '1-2': [
+                { name: 'English', icon: '🔤', class: 'english', progress: 45 },
+                { name: 'Hindi', icon: '📝', class: 'hindi', progress: 50 },
+                { name: 'Mathematics', icon: '➕', class: 'math', progress: 68 },
+                { name: 'EVS', icon: '🌱', class: 'evs', progress: 55 }
+            ],
+            '3-5': [
+                { name: 'English', icon: '📖', class: 'english', progress: 62 },
+                { name: 'Hindi', icon: '📚', class: 'hindi', progress: 58 },
+                { name: 'Mathematics', icon: '🔢', class: 'math', progress: 70 },
+                { name: 'Science', icon: '🔬', class: 'science', progress: 45 }
+            ],
+            '6-8': [
+                { name: 'English', icon: '📖', class: 'language', progress: 82 },
+                { name: 'Mathematics', icon: '➕', class: 'math', progress: 68 },
+                { name: 'Science', icon: '🔬', class: 'science', progress: 65 }
+            ],
+            '9-10': [
+                { name: 'English', icon: '📖', class: 'language', progress: 78 },
+                { name: 'Mathematics', icon: '➕', class: 'math', progress: 65 },
+                { name: 'Science', icon: '🔬', class: 'science', progress: 70 }
+            ],
+            '11-12': [
+                { name: 'Mathematics', icon: '➕', class: 'math', progress: 72 },
+                { name: 'Physics', icon: '⚛️', class: 'physics', progress: 68 },
+                { name: 'Chemistry', icon: '🧪', class: 'chemistry', progress: 70 }
+            ]
+        };
+        
+        // Quiz Database
+        const quizDatabase = {
+            '1-2': {
+                'English': [
+                    { q: "What letter comes after 'A'?", opts: ["B", "C", "D", "Z"], ans: 0 },
+                    { q: "Which is a vowel?", opts: ["B", "C", "E", "F"], ans: 2 },
+                    { q: "Cat starts with which letter?", opts: ["A", "B", "C", "D"], ans: 2 },
+                    { q: "How many vowels are there?", opts: ["3", "4", "5", "6"], ans: 2 },
+                    { q: "Which word rhymes with 'hat'?", opts: ["dog", "cat", "sun", "moon"], ans: 1 }
+                ],
+                'Hindi': [
+                    { q: "कितने स्वर हैं?", opts: ["10", "11", "12", "13"], ans: 1 },
+                    { q: "'क' के बाद क्या आता है?", opts: ["ख", "ग", "घ", "च"], ans: 0 },
+                    { q: "कौन सा स्वर है?", opts: ["क", "अ", "च", "प"], ans: 1 },
+                    { q: "'आ' कौन सा स्वर है?", opts: ["पहला", "दूसरा", "तीसरा", "चौथा"], ans: 1 },
+                    { q: "कितने व्यंजन हैं?", opts: ["30", "33", "35", "38"], ans: 1 }
+                ],
+                'Mathematics': [
+                    { q: "What is 2 + 2?", opts: ["3", "4", "5", "6"], ans: 1 },
+                    { q: "What is 5 - 3?", opts: ["1", "2", "3", "4"], ans: 1 },
+                    { q: "What is 3 + 1?", opts: ["2", "3", "4", "5"], ans: 2 },
+                    { q: "How many fingers do you have?", opts: ["8", "9", "10", "11"], ans: 2 },
+                    { q: "What is 1 + 1?", opts: ["1", "2", "3", "4"], ans: 1 }
+                ],
+                'EVS': [
+                    { q: "Which animal gives milk?", opts: ["Dog", "Cow", "Cat", "Lion"], ans: 1 },
+                    { q: "What color is the sky?", opts: ["Red", "Blue", "Green", "Yellow"], ans: 1 },
+                    { q: "Which is a fruit?", opts: ["Carrot", "Apple", "Potato", "Onion"], ans: 1 },
+                    { q: "The sun rises in the:", opts: ["East", "West", "North", "South"], ans: 0 },
+                    { q: "Plants need ___ to grow:", opts: ["Water", "Toys", "Books", "Shoes"], ans: 0 }
+                ]
+            },
+            '3-5': {
+                'English': [
+                    { q: "What is the plural of 'child'?", opts: ["Childs", "Children", "Childes", "Child"], ans: 1 },
+                    { q: "Which is a noun?", opts: ["Run", "Beautiful", "Table", "Quickly"], ans: 2 },
+                    { q: "What is the opposite of 'happy'?", opts: ["Sad", "Angry", "Excited", "Tired"], ans: 0 },
+                    { q: "Synonym of 'big' is:", opts: ["Small", "Large", "Tiny", "Little"], ans: 1 },
+                    { q: "Past tense of 'eat' is:", opts: ["Eated", "Ate", "Eaten", "Eating"], ans: 1 }
+                ],
+                'Hindi': [
+                    { q: "'बालिका' का बहुवचन:", opts: ["बालिकाएं", "बालक", "बालिका", "बालिकाओं"], ans: 0 },
+                    { q: "'सुंदर' कौन सा शब्द है?", opts: ["संज्ञा", "सर्वनाम", "विशेषण", "क्रिया"], ans: 2 },
+                    { q: "'पुस्तक' का पर्यायवाची:", opts: ["किताब", "कलम", "कागज", "बस्ता"], ans: 0 },
+                    { q: "'दिन' का विलोम:", opts: ["सुबह", "शाम", "रात", "दोपहर"], ans: 2 },
+                    { q: "लिंग कितने प्रकार के?", opts: ["1", "2", "3", "4"], ans: 1 }
+                ],
+                'Mathematics': [
+                    { q: "What is 25 × 4?", opts: ["90", "100", "110", "120"], ans: 1 },
+                    { q: "What is 144 ÷ 12?", opts: ["10", "11", "12", "13"], ans: 2 },
+                    { q: "What is 1/2 + 1/2?", opts: ["1/2", "1", "2", "1/4"], ans: 1 },
+                    { q: "How many sides does hexagon have?", opts: ["5", "6", "7", "8"], ans: 1 },
+                    { q: "What is 8 × 7?", opts: ["54", "56", "58", "60"], ans: 1 }
+                ],
+                'Science': [
+                    { q: "Boiling point of water?", opts: ["90°C", "100°C", "110°C", "120°C"], ans: 1 },
+                    { q: "Which planet is closest to sun?", opts: ["Venus", "Earth", "Mercury", "Mars"], ans: 2 },
+                    { q: "Plants make food through:", opts: ["Respiration", "Photosynthesis", "Digestion", "Absorption"], ans: 1 },
+                    { q: "Which is a mammal?", opts: ["Fish", "Bird", "Whale", "Frog"], ans: 2 },
+                    { q: "What do plants breathe in?", opts: ["Oxygen", "Carbon dioxide", "Nitrogen", "Hydrogen"], ans: 1 }
+                ]
+            },
+            '6-8': {
+                'English': [
+                    { q: "What is a metaphor?", opts: ["Direct comparison", "Indirect comparison", "Exaggeration", "Sound words"], ans: 1 },
+                    { q: "Superlative of 'good'?", opts: ["Gooder", "More good", "Best", "Better"], ans: 2 },
+                    { q: "Which is a conjunction?", opts: ["And", "Beautiful", "Run", "Table"], ans: 0 },
+                    { q: "Past participle of 'write'?", opts: ["Wrote", "Written", "Writing", "Writes"], ans: 1 },
+                    { q: "Antonym of 'ancient'?", opts: ["Old", "Modern", "Historic", "Traditional"], ans: 1 }
+                ],
+                'Mathematics': [
+                    { q: "Value of π?", opts: ["3.14", "3.41", "4.13", "2.71"], ans: 0 },
+                    { q: "What is √144?", opts: ["10", "11", "12", "13"], ans: 2 },
+                    { q: "In algebra, 2x + 3x = ?", opts: ["5x", "6x", "5x²", "6x²"], ans: 0 },
+                    { q: "Sum of angles in triangle?", opts: ["90°", "180°", "270°", "360°"], ans: 1 },
+                    { q: "What is 5²?", opts: ["10", "15", "20", "25"], ans: 3 }
+                ],
+                'Science': [
+                    { q: "Chemical formula for water?", opts: ["H2O", "O2", "CO2", "H2"], ans: 0 },
+                    { q: "Powerhouse of cell?", opts: ["Nucleus", "Mitochondria", "Ribosome", "Golgi"], ans: 1 },
+                    { q: "Speed of light?", opts: ["3×10⁸ m/s", "3×10⁶ m/s", "3×10⁷ m/s", "3×10⁹ m/s"], ans: 0 },
+                    { q: "Which vitamin from sunlight?", opts: ["A", "B", "C", "D"], ans: 3 },
+                    { q: "SI unit of force?", opts: ["Joule", "Newton", "Watt", "Pascal"], ans: 1 }
+                ]
+            },
+            '9-10': {
+                'English': [
+                    { q: "Iambic pentameter has:", opts: ["5 feet per line", "10 syllables", "Both A and B", "Neither"], ans: 2 },
+                    { q: "Who wrote Romeo and Juliet?", opts: ["Dickens", "Shakespeare", "Wordsworth", "Milton"], ans: 1 },
+                    { q: "A sonnet has how many lines?", opts: ["10", "14", "16", "20"], ans: 1 },
+                    { q: "What is an oxymoron?", opts: ["Same meaning", "Opposite meanings together", "Exaggeration", "Comparison"], ans: 1 },
+                    { q: "Author of '1984'?", opts: ["Orwell", "Huxley", "Bradbury", "Vonnegut"], ans: 0 }
+                ],
+                'Mathematics': [
+                    { q: "Quadratic formula has:", opts: ["(-b ± √(b²-4ac))/2a", "(-b ± √(b²+4ac))/2a", "(b ± √(b²-4ac))/2a", "None"], ans: 0 },
+                    { q: "Sin²θ + Cos²θ = ?", opts: ["0", "1", "2", "∞"], ans: 1 },
+                    { q: "Value of sin 90°?", opts: ["0", "1", "1/2", "√3/2"], ans: 1 },
+                    { q: "Pythagoras theorem:", opts: ["a² + b² = c", "a² + b² = c²", "a² + b² = 2c", "a + b = c"], ans: 1 },
+                    { q: "Value of tan 45°?", opts: ["0", "1", "√3", "1/√3"], ans: 1 }
+                ],
+                'Science': [
+                    { q: "Newton's first law:", opts: ["F=ma", "Inertia", "Action-reaction", "Gravity"], ans: 1 },
+                    { q: "Ohm's law: V = ?", opts: ["IR", "I/R", "R/I", "I+R"], ans: 0 },
+                    { q: "Valency of carbon?", opts: ["2", "3", "4", "5"], ans: 2 },
+                    { q: "ATP full form?", opts: ["Adenosine Triphosphate", "Adenine Triphosphate", "None", "Both"], ans: 0 },
+                    { q: "pH of pure water?", opts: ["6", "7", "8", "9"], ans: 1 }
+                ]
+            },
+            '11-12': {
+                'Mathematics': [
+                    { q: "∫eˣ dx = ?", opts: ["eˣ", "eˣ + C", "xeˣ", "eˣ/x"], ans: 1 },
+                    { q: "Derivative of sin(x)?", opts: ["cos(x)", "-cos(x)", "sin(x)", "-sin(x)"], ans: 0 },
+                    { q: "Binomial theorem:", opts: ["aⁿ+bⁿ", "Σ(ⁿCᵣ)aⁿ⁻ʳbʳ", "naⁿ⁻¹b", "None"], ans: 1 },
+                    { q: "Limit x→0 sin(x)/x?", opts: ["0", "1", "∞", "Undefined"], ans: 1 },
+                    { q: "Complex number form:", opts: ["a+b", "a+bi", "a×b", "a/b"], ans: 1 }
+                ],
+                'Physics': [
+                    { q: "Work-Energy theorem:", opts: ["ΔKE", "ΔPE", "KE+PE", "KE-PE"], ans: 0 },
+                    { q: "Planck's constant:", opts: ["6.63×10⁻³⁴ Js", "6.63×10³⁴ Js", "3×10⁸ m/s", "9.8 m/s²"], ans: 0 },
+                    { q: "Einstein equation:", opts: ["E=mc", "E=mc²", "E=m/c", "E=m/c²"], ans: 1 },
+                    { q: "SI unit of momentum?", opts: ["kg", "kg·m/s", "N", "J"], ans: 1 },
+                    { q: "Acceleration due to gravity:", opts: ["9.8 m/s", "9.8 m/s²", "9.8 km/s²", "98 m/s²"], ans: 1 }
+                ],
+                'Chemistry': [
+                    { q: "Avogadro's number:", opts: ["6.023×10²³", "6.023×10⁻²³", "3×10⁸", "9.8"], ans: 0 },
+                    { q: "Hybridization in methane:", opts: ["sp", "sp²", "sp³", "sp³d"], ans: 2 },
+                    { q: "Functional group in alcohol:", opts: ["-COOH", "-OH", "-CHO", "-NH₂"], ans: 1 },
+                    { q: "Benzene formula:", opts: ["C₆H₆", "C₆H₁₂", "C₅H₆", "C₇H₈"], ans: 0 },
+                    { q: "pH + pOH = ?", opts: ["7", "14", "1", "0"], ans: 1 }
+                ]
+            }
+        };
+
+        // Study Notes
+        const studyNotes = {
+            '1-2': {
+                'English': '<h3>The Alphabet</h3><p>The English alphabet has 26 letters. Learn uppercase and lowercase letters.</p>',
+                'Hindi': '<h3>वर्णमाला</h3><p>हिंदी में 11 स्वर और 33 व्यंजन होते हैं।</p>',
+                'Mathematics': '<h3>Numbers 1-20</h3><p>Learn to count from 1 to 20. Practice addition and subtraction.</p>',
+                'EVS': '<h3>My Family</h3><p>Family includes mother, father, siblings, and grandparents.</p>'
+            },
+            '3-5': {
+                'English': '<h3>Parts of Speech</h3><p>Noun, Pronoun, Verb, Adjective, Adverb.</p>',
+                'Hindi': '<h3>संज्ञा</h3><p>व्यक्ति, स्थान या वस्तु के नाम को संज्ञा कहते हैं।</p>',
+                'Mathematics': '<h3>Multiplication Tables</h3><p>Learn tables from 2 to 20.</p>',
+                'Science': '<h3>Living and Non-Living</h3><p>Living things need food, water, and air.</p>'
+            },
+            '6-8': {
+                'English': '<h3>Literary Devices</h3><p>Simile, Metaphor, Personification, Alliteration.</p>',
+                'Mathematics': '<h3>Algebra Basics</h3><p>Variables, Constants, Expressions, Equations.</p>',
+                'Science': '<h3>Cell Structure</h3><p>Cell is the basic unit of life. Parts: Nucleus, Cytoplasm, Cell Membrane.</p>'
+            },
+            '9-10': {
+                'English': '<h3>Literature</h3><p>Poetry analysis, themes, and literary movements.</p>',
+                'Mathematics': '<h3>Quadratic Equations</h3><p>Standard form: ax² + bx + c = 0</p>',
+                'Science': '<h3>Chemical Bonding</h3><p>Ionic, Covalent, and Metallic bonds.</p>'
+            },
+            '11-12': {
+                'Mathematics': '<h3>Calculus</h3><p>Differentiation and Integration concepts.</p>',
+                'Physics': '<h3>Electrostatics</h3><p>Coulomb\'s Law and Electric Field.</p>',
+                'Chemistry': '<h3>Organic Chemistry</h3><p>Functional Groups and Reactions.</p>'
+            }
+        };
+
+        let currentQuiz = {
+            subject: '',
+            questions: [],
+            currentQuestion: 0,
+            score: 0
+        };
+
+        let memoryGame = { cards: [], flippedCards: [], matchedPairs: 0 };
+        let puzzleGame = { tiles: [], moves: 0 };
+        let spellingGame = { currentWord: '', score: 0 };
+
+        function addNotification(title, message, type = 'info') {
+            if (!gameState.notificationsEnabled) return;
+            
+            const notification = {
+                id: Date.now(),
+                title: title,
+                message: message,
+                type: type,
+                time: new Date().toISOString(),
+                read: false
+            };
+            
+            gameState.notifications.unshift(notification);
+            
+            if (gameState.notifications.length > 50) {
+                gameState.notifications = gameState.notifications.slice(0, 50);
+            }
+            
+            saveUserData();
+            updateNotificationBadge();
+            renderNotifications();
+        }
+
+        function updateNotificationBadge() {
+            const unreadCount = gameState.notifications.filter(n => !n.read).length;
+            const badge = document.getElementById('notifCount');
+            badge.textContent = unreadCount;
+            badge.style.display = unreadCount > 0 ? 'flex' : 'none';
+        }
+
+        function renderNotifications() {
+            const container = document.getElementById('notificationsList');
+            
+            if (gameState.notifications.length === 0) {
+                container.innerHTML = '<div class="notification-item"><p>No notifications yet!</p></div>';
+                return;
+            }
+            
+            container.innerHTML = gameState.notifications.map(notif => {
+                const time = new Date(notif.time);
+                const now = new Date();
+                const diff = Math.floor((now - time) / 1000);
+                
+                let timeStr = '';
+                if (diff < 60) timeStr = 'Just now';
+                else if (diff < 3600) timeStr = Math.floor(diff / 60) + ' minutes ago';
+                else if (diff < 86400) timeStr = Math.floor(diff / 3600) + ' hours ago';
+                else timeStr = Math.floor(diff / 86400) + ' days ago';
+                
+                return `
+                    <div class="notification-item ${notif.read ? '' : 'unread'}" onclick="markNotificationRead(${notif.id})">
+                        <strong>${notif.title}</strong>
+                        <p style="color: var(--text-secondary); margin: 5px 0;">${notif.message}</p>
+                        <small class="notification-time">${timeStr}</small>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function markNotificationRead(notifId) {
+            const notif = gameState.notifications.find(n => n.id === notifId);
+            if (notif) {
+                notif.read = true;
+                saveUserData();
+                updateNotificationBadge();
+                renderNotifications();
+            }
+        }
+
+        function clearAllNotifications() {
+            if (confirm('Clear all notifications?')) {
+                gameState.notifications = [];
+                saveUserData();
+                updateNotificationBadge();
+                renderNotifications();
+            }
+        }
+
+        function toggleNotifications() {
+            const panel = document.getElementById('notificationPanel');
+            panel.classList.toggle('show');
+            
+            if (panel.classList.contains('show')) {
+                gameState.notifications.forEach(n => n.read = true);
+                saveUserData();
+                updateNotificationBadge();
+                renderNotifications();
+            }
+        }
+
+        function checkBadges() {
+            const previousBadges = [...gameState.earnedBadges];
+            
+            badges.forEach(badge => {
+                if (!gameState.earnedBadges.includes(badge.id) && badge.requirement(gameState)) {
+                    gameState.earnedBadges.push(badge.id);
+                    addNotification(
+                        '🏅 New Badge Earned!',
+                        `Congratulations! You've earned the "${badge.name}" badge!`,
+                        'achievement'
+                    );
+                    gameState.currentXP += 50;
+                    gameState.totalXP += 50;
+                }
+            });
+            
+            if (gameState.earnedBadges.length > previousBadges.length) {
+                updateXPBar();
+                saveUserData();
+            }
+        }
+
+        function renderBadges() {
+            const container = document.getElementById('badgesGrid');
+            
+            container.innerHTML = badges.map(badge => {
+                const earned = gameState.earnedBadges.includes(badge.id);
+                return `
+                    <div class="badge-card ${earned ? 'earned' : 'locked'}">
+                        <div class="badge-icon">${badge.icon}</div>
+                        <div class="badge-name">${badge.name}</div>
+                        <div class="badge-description">${badge.description}</div>
+                        ${earned ? '<div style="color: #4CAF50; font-size: 10px; margin-top: 5px;">✓ Earned</div>' : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            
+            gameState.currentTab = tabName;
+            
+            if (tabName === 'badges') {
+                renderBadges();
+            }
+        }
+
+        function showClassSelector() {
+            document.getElementById('classModal').classList.add('show');
+            updateClassSelection();
+        }
+
+        function updateClassSelection() {
+            document.querySelectorAll('.class-option').forEach(opt => {
+                opt.classList.remove('selected');
+                if (opt.textContent.includes(gameState.selectedClass)) {
+                    opt.classList.add('selected');
+                }
+            });
+        }
+
+        function selectClass(classLevel) {
+            gameState.selectedClass = classLevel;
+            document.getElementById('classDisplay').innerHTML = `📚 Class ${classLevel}`;
+            loadSubjects();
+            loadStudyMaterials();
+            closeModal('classModal');
+            saveUserData();
+            addNotification('📚 Class Changed', `You've switched to Class ${classLevel}`, 'info');
+        }
+
+        function loadSubjects() {
+            const subjects = subjectsByClass[gameState.selectedClass] || subjectsByClass['1-2'];
+            
+            const subjectsHTML = subjects.map(subject => `
+                <div class="subject-card ${subject.class}" onclick="startQuiz('${subject.name}')">
+                    <div class="subject-icon">${subject.icon}</div>
+                    <div class="subject-name">${subject.name}</div>
+                    <div class="subject-progress">🎮 Click to Play Quiz!</div>
+                </div>
+            `).join('');
+            
+            document.getElementById('subjectsGrid').innerHTML = subjectsHTML;
+            document.getElementById('dashboardSubjects').innerHTML = subjectsHTML;
+        }
+
+        function loadStudyMaterials() {
+            const notes = studyNotes[gameState.selectedClass] || studyNotes['1-2'];
+            let html = '';
+            
+            Object.keys(notes).forEach(subject => {
+                html += `
+                    <div class="study-item" onclick="openStudyNotes('${subject}')">
+                        <div style="font-weight: 600; margin-bottom: 5px; color: var(--text-primary);">📖 ${subject} - Study Notes</div>
+                        <div style="font-size: 12px; color: var(--text-secondary);">Click to read</div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('studyMaterialList').innerHTML = html || '<p>No study materials available.</p>';
+        }
+
+        function openStudyNotes(subject) {
+            const modal = document.getElementById('studyModal');
+            const content = document.getElementById('studyContent');
+            const notes = studyNotes[gameState.selectedClass][subject];
+            
+            content.innerHTML = `<h2>📖 ${subject}</h2><div style="text-align: left;">${notes}</div>`;
+            modal.classList.add('show');
+        }
+
+        function startQuiz(subject) {
+            const questions = quizDatabase[gameState.selectedClass]?.[subject];
+            
+            if (!questions) {
+                alert('Quiz coming soon for this subject!');
+                return;
+            }
+            
+            currentQuiz = {
+                subject: subject,
+                questions: questions.map(q => ({
+                    question: q.q,
+                    options: q.opts,
+                    correct: q.ans
+                })),
+                currentQuestion: 0,
+                score: 0
+            };
+            
+            document.getElementById('quizModal').classList.add('show');
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const question = currentQuiz.questions[currentQuiz.currentQuestion];
+            const container = document.getElementById('quizContainer');
+            const totalQuestions = currentQuiz.questions.length;
+            
+            container.innerHTML = `
+                <div class="quiz-container">
+                    <div class="quiz-header">
+                        <h2>🎮 ${currentQuiz.subject} Quiz</h2>
+                        <div style="font-size: 18px; color: #667eea; font-weight: 600; margin-bottom: 10px;">
+                            Question ${currentQuiz.currentQuestion + 1} of ${totalQuestions}
+                        </div>
+                        <div style="font-size: 16px; color: var(--text-secondary);">
+                            Score: ${currentQuiz.score} / ${currentQuiz.currentQuestion * 10} points
+                        </div>
+                    </div>
+                    
+                    <div class="question-text">${question.question}</div>
+                    
+                    <div class="options-container">
+                        ${question.options.map((option, index) => `
+                            <button class="option-btn" onclick="selectAnswer(${index})">
+                                ${option}
+                            </button>
+                        `).join('')}
+                    </div>
+                    
+                    <button class="btn btn-secondary" onclick="closeModal('quizModal')">Exit</button>
+                </div>
+            `;
+        }
+
+        function selectAnswer(selectedIndex) {
+            const question = currentQuiz.questions[currentQuiz.currentQuestion];
+            const buttons = document.querySelectorAll('.option-btn');
+            
+            buttons.forEach(btn => btn.disabled = true);
+            
+            const isCorrect = selectedIndex === question.correct;
+            buttons[selectedIndex].classList.add(isCorrect ? 'correct' : 'incorrect');
+            if (!isCorrect) {
+                buttons[question.correct].classList.add('correct');
+            }
+            
+            if (isCorrect) {
+                currentQuiz.score += 10;
+                gameState.currentXP += 10;
+                gameState.totalXP += 10;
+                updateXPBar();
+                saveUserData();
+            }
+            
+            setTimeout(() => {
+                currentQuiz.currentQuestion++;
+                if (currentQuiz.currentQuestion < currentQuiz.questions.length) {
+                    renderQuestion();
+                } else {
+                    showQuizResults();
+                }
+            }, 1500);
+        }
+
+        function showQuizResults() {
+            const container = document.getElementById('quizContainer');
+            const totalQuestions = currentQuiz.questions.length;
+            const correctAnswers = Math.round(currentQuiz.score / 10);
+            const percentage = Math.round((correctAnswers / totalQuestions) * 100);
+            
+            gameState.quizzesCompleted++;
+            document.getElementById('quizzesCompleted').textContent = gameState.quizzesCompleted;
+            
+            checkBadges();
+            saveUserData();
+            addNotification('🎯 Quiz Completed!', `You scored ${percentage}% in ${currentQuiz.subject}. Earned ${currentQuiz.score} XP!`, 'achievement');
+            
+            let message = percentage === 100 ? 'Perfect! 🏆' : percentage >= 80 ? 'Excellent! 🌟' : 'Good Job! 👍';
+            
+            container.innerHTML = `
+                <div style="text-align: center; padding: 30px;">
+                    <h2>${message}</h2>
+                    <div style="font-size: 72px; font-weight: bold; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 20px 0;">
+                        ${percentage}%
+                    </div>
+                    <div style="display: flex; justify-content: space-around; margin-top: 30px; flex-wrap: wrap; gap: 20px;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 36px; font-weight: bold; color: #667eea;">${currentQuiz.score}</div>
+                            <div style="font-size: 14px; color: var(--text-secondary);">Points</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 36px; font-weight: bold; color: #667eea;">${correctAnswers}</div>
+                            <div style="font-size: 14px; color: var(--text-secondary);">Correct</div>
+                        </div>
+                    </div>
+                    <button class="btn" onclick="startQuiz('${currentQuiz.subject}')" style="margin-top: 20px;">🔄 Play Again</button>
+                    <button class="btn btn-secondary" onclick="closeModal('quizModal')" style="margin-left: 10px;">Continue</button>
+                </div>
+            `;
+        }
+
+        function openGame(gameType) {
+            const modal = document.getElementById('gameModal');
+            const content = document.getElementById('gameContent');
+            
+            if (gameType === 'crossword') content.innerHTML = initCrossword();
+            else if (gameType === 'puzzle') content.innerHTML = initPuzzle();
+            else if (gameType === 'spelling') content.innerHTML = initSpelling();
+            else if (gameType === 'memory') content.innerHTML = initMemory();
+            
+            modal.classList.add('show');
+        }
+
+        function initCrossword() {
+            const grid = [
+                ['C', 'A', 'T', '', ''],
+                ['', '', 'R', '', ''],
+                ['', '', 'E', 'A', 'R'],
+                ['', '', 'E', '', ''],
+                ['D', 'O', 'G', '', '']
+            ];
+            
+            let html = `<h2>🔤 Crossword Puzzle</h2><div class="game-stats"><div class="game-stat"><div class="game-stat-value" id="crosswordScore">0</div><div class="game-stat-label">Correct</div></div></div><div class="crossword-grid" style="grid-template-columns: repeat(5, 40px);">`;
+            
+            for (let i = 0; i < 5; i++) {
+                for (let j = 0; j < 5; j++) {
+                    const letter = grid[i][j];
+                    if (letter === '') {
+                        html += `<div class="crossword-cell black"></div>`;
+                    } else {
+                        html += `<div class="crossword-cell"><input type="text" maxlength="1" data-answer="${letter}" onkeyup="checkCrosswordLetter(event)" style="outline: none;"></div>`;
+                    }
+                }
+            }
+            
+            html += `</div><div style="margin: 20px 0; text-align: left;"><h4>Clues:</h4><p>1. Pet that meows (Across)</p><p>2. Listening organ (Across)</p><p>3. Pet that barks (Across)</p><p>4. Plant with leaves (Down)</p></div><button class="btn" onclick="checkCrossword()">Check Answers</button>`;
+            return html;
+        }
+
+        function checkCrosswordLetter(event) {
+            const input = event.target;
+            const answer = input.dataset.answer;
+            const value = input.value.toUpperCase();
+            
+            if (value === answer) {
+                input.style.backgroundColor = '#4CAF50';
+                input.style.color = 'white';
+                input.disabled = true;
+            }
+        }
+
+        function checkCrossword() {
+            const inputs = document.querySelectorAll('.crossword-cell input');
+            let correct = 0;
+            
+            inputs.forEach(input => {
+                if (input.value.toUpperCase() === input.dataset.answer) {
+                    correct++;
+                    input.style.backgroundColor = '#4CAF50';
+                    input.style.color = 'white';
+                }
+            });
+            
+            document.getElementById('crosswordScore').textContent = correct;
+            
+            if (correct === inputs.length) {
+                gameState.currentXP += 50;
+                gameState.totalXP += 50;
+                updateXPBar();
+                saveUserData();
+                checkBadges();
+                addNotification('🎉 Game Complete!', 'You solved the crossword puzzle! +50 XP', 'achievement');
+                alert('🎉 Perfect! +50 XP');
+            }
+        }
+
+        function initPuzzle() {
+            const tiles = [1, 2, 3, 4, 5, 6, 7, 8, 0];
+            for (let i = tiles.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
+            }
+            puzzleGame.tiles = tiles;
+            puzzleGame.moves = 0;
+            return renderPuzzle();
+        }
+
+        function renderPuzzle() {
+            return `<h2>🧩 Sliding Puzzle</h2><p>Arrange numbers 1-8 in order!</p><div class="game-stats"><div class="game-stat"><div class="game-stat-value" id="puzzleMoves">0</div><div class="game-stat-label">Moves</div></div></div><div class="puzzle-grid">${puzzleGame.tiles.map((num, idx) => `<div class="puzzle-piece ${num === 0 ? 'empty' : ''}" onclick="movePuzzle(${idx})">${num === 0 ? '' : num}</div>`).join('')}</div><button class="btn" onclick="document.getElementById('gameContent').innerHTML = initPuzzle()">🔄 New Puzzle</button>`;
+        }
+
+        function movePuzzle(idx) {
+            const emptyIdx = puzzleGame.tiles.indexOf(0);
+            const validMoves = [emptyIdx - 1, emptyIdx + 1, emptyIdx - 3, emptyIdx + 3];
+            
+            if (validMoves.includes(idx)) {
+                [puzzleGame.tiles[idx], puzzleGame.tiles[emptyIdx]] = [puzzleGame.tiles[emptyIdx], puzzleGame.tiles[idx]];
+                puzzleGame.moves++;
+                
+                document.getElementById('gameContent').innerHTML = renderPuzzle();
+                document.getElementById('puzzleMoves').textContent = puzzleGame.moves;
+                
+                if (checkPuzzleWin()) {
+                    gameState.currentXP += 40;
+                    gameState.totalXP += 40;
+                    updateXPBar();
+                    saveUserData();
+                    checkBadges();
+                    addNotification('🧩 Puzzle Solved!', 'You completed the sliding puzzle! +40 XP', 'achievement');
+                    setTimeout(() => alert('🎉 You solved it! +40 XP'), 300);
+                }
+            }
+        }
+
+        function checkPuzzleWin() {
+            for (let i = 0; i < 8; i++) {
+                if (puzzleGame.tiles[i] !== i + 1) return false;
+            }
+            return true;
+        }
+
+        function initSpelling() {
+            const words = { easy: ['CAT', 'DOG', 'SUN', 'MOON'], medium: ['APPLE', 'HAPPY', 'SCHOOL'], hard: ['ELEPHANT', 'BEAUTIFUL'] };
+            const wordList = words[gameState.difficulty] || words.medium;
+            spellingGame.currentWord = wordList[Math.floor(Math.random() * wordList.length)];
+            
+            return `<h2>✏️ Spelling Bee</h2><p>Listen and spell the word!</p><div class="spelling-word">${spellingGame.currentWord.split('').map(() => '_').join(' ')}</div><input type="text" class="spelling-input" id="spellingInput" placeholder="Type here..." onkeyup="if(event.key==='Enter') checkSpelling()"><button class="btn" onclick="checkSpelling()">Check Spelling</button><button class="btn btn-secondary" onclick="speakWord()">🔊 Hear Word</button>`;
+        }
+
+        function speakWord() {
+            if ('speechSynthesis' in window && gameState.soundEnabled) {
+                const utterance = new SpeechSynthesisUtterance(spellingGame.currentWord);
+                speechSynthesis.speak(utterance);
+            } else {
+                alert(`The word is: ${spellingGame.currentWord}`);
+            }
+        }
+
+        function checkSpelling() {
+            const input = document.getElementById('spellingInput');
+            const guess = input.value.toUpperCase().trim();
+            
+            if (guess === spellingGame.currentWord) {
+                gameState.currentXP += 30;
+                gameState.totalXP += 30;
+                updateXPBar();
+                saveUserData();
+                checkBadges();
+                addNotification('✏️ Correct Spelling!', `You spelled "${spellingGame.currentWord}" correctly! +30 XP`, 'achievement');
+                alert('🎉 Correct! +30 XP');
+                document.getElementById('gameContent').innerHTML = initSpelling();
+            } else {
+                alert('❌ Try again!');
+                input.value = '';
+            }
+        }
+
+        function initMemory() {
+            const symbols = ['🍎','🍌','🍇','🍊','🍓','🍑','🥝','🍒'];
+            memoryGame.cards = [...symbols, ...symbols].sort(() => Math.random() - 0.5);
+            memoryGame.flippedCards = [];
+            memoryGame.matchedPairs = 0;
+            
+            return `<h2>🧠 Memory Game</h2><p>Find all matching pairs!</p><div class="game-stats"><div class="game-stat"><div class="game-stat-value" id="memoryPairs">0</div><div class="game-stat-label">Pairs Found</div></div></div><div class="memory-grid" id="memoryGrid">${memoryGame.cards.map((symbol, i) => `<div class="memory-card" id="card${i}" onclick="flipMemoryCard(${i})"><div class="card-back">${symbol}</div></div>`).join('')}</div><button class="btn" onclick="document.getElementById('gameContent').innerHTML = initMemory()">🔄 New Game</button>`;
+        }
+
+        function flipMemoryCard(idx) {
+            const card = document.getElementById(`card${idx}`);
+            
+            if (card.classList.contains('flipped') || card.classList.contains('matched')) return;
+            if (memoryGame.flippedCards.length >= 2) return;
+            
+            card.classList.add('flipped');
+            memoryGame.flippedCards.push(idx);
+            
+            if (memoryGame.flippedCards.length === 2) {
+                setTimeout(checkMemoryMatch, 800);
+            }
+        }
+
+        function checkMemoryMatch() {
+            const [idx1, idx2] = memoryGame.flippedCards;
+            const card1 = document.getElementById(`card${idx1}`);
+            const card2 = document.getElementById(`card${idx2}`);
+            
+            if (memoryGame.cards[idx1] === memoryGame.cards[idx2]) {
+                card1.classList.add('matched');
+                card2.classList.add('matched');
+                memoryGame.matchedPairs++;
+                document.getElementById('memoryPairs').textContent = memoryGame.matchedPairs;
+                
+                if (memoryGame.matchedPairs === 8) {
+                    gameState.currentXP += 60;
+                    gameState.totalXP += 60;
+                    updateXPBar();
+                    saveUserData();
+                    checkBadges();
+                    addNotification('🧠 Memory Master!', 'You found all pairs! +60 XP', 'achievement');
+                    setTimeout(() => alert('🎉 All pairs found! +60 XP'), 500);
+                }
+            } else {
+                card1.classList.remove('flipped');
+                card2.classList.remove('flipped');
+            }
+            
+            memoryGame.flippedCards = [];
+        }
+
+        function filterLeaderboard(filter) {
+            gameState.currentLeaderboardFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderLeaderboard();
+        }
+
+        function renderLeaderboard() {
+            const list = document.getElementById('leaderboardList');
+            const data = leaderboardData[gameState.currentLeaderboardFilter] || leaderboardData.global;
+            
+            let html = '';
+            data.forEach((player, index) => {
+                const rank = index + 1;
+                let rankDisplay = rank;
+                let rankClass = '';
+                
+                if (rank === 1) { rankDisplay = '🥇'; rankClass = 'gold'; }
+                else if (rank === 2) { rankDisplay = '🥈'; rankClass = 'silver'; }
+                else if (rank === 3) { rankDisplay = '🥉'; rankClass = 'bronze'; }
+                
+                html += `
+                    <li class="leaderboard-item ${player.isCurrentUser ? 'current-user' : ''}">
+                        <div class="rank ${rankClass}">${rankDisplay}</div>
+                        <div class="player-avatar">${player.avatar}</div>
+                        <div class="player-info">
+                            <div class="player-name">${player.name}</div>
+                            <div style="font-size: 12px; color: var(--text-secondary);">Level ${player.level}</div>
+                        </div>
+                        <div class="player-score">${player.totalXP} XP</div>
+                    </li>
+                `;
+            });
+            
+            list.innerHTML = html;
+            
+            const userRank = data.findIndex(p => p.isCurrentUser) + 1;
+            document.getElementById('yourRank').textContent = userRank > 0 ? `#${userRank}` : '-';
+            document.getElementById('yourTotalXP').textContent = gameState.totalXP;
+        }
+
+        function updateXPBar() {
+            const percentage = Math.min((gameState.currentXP / gameState.maxXP) * 100, 100);
+            document.getElementById('xpFill').style.width = percentage + '%';
+            document.getElementById('xpFill').textContent = Math.round(percentage) + '%';
+            document.getElementById('currentXP').textContent = gameState.currentXP;
+            document.getElementById('maxXP').textContent = gameState.maxXP;
+            document.getElementById('totalXP').textContent = gameState.totalXP;
+            document.getElementById('userLevel').textContent = gameState.level;
+            
+            if (gameState.currentXP >= gameState.maxXP) {
+                const oldLevel = gameState.level;
+                gameState.level++;
+                gameState.currentXP = gameState.currentXP - gameState.maxXP;
+                gameState.maxXP = Math.floor(gameState.maxXP * 1.5);
+                
+                addNotification('🎉 Level Up!', `Congratulations! You reached Level ${gameState.level}!`, 'achievement');
+                alert(`🎉 Level Up! You are now Level ${gameState.level}!`);
+                
+                checkBadges();
+                saveUserData();
+                updateXPBar();
+            }
+        }
+
+        function loadNotes() {
+            const list = document.getElementById('notesList');
+            
+            if (gameState.notes.length === 0) {
+                list.innerHTML = '<li class="note-item">No notes yet!</li>';
+                return;
+            }
+            
+            list.innerHTML = gameState.notes.map((note, idx) => `
+                <li class="note-item ${gameState.currentNoteId === idx ? 'active' : ''}" onclick="selectNote(${idx})">
+                    <strong>${note.title || 'Untitled'}</strong><br>
+                    <small>${new Date(note.date).toLocaleDateString()}</small>
+                </li>
+            `).join('');
+        }
+
+        function createNewNote() {
+            gameState.notes.push({ title: '', content: '', date: Date.now() });
+            gameState.currentNoteId = gameState.notes.length - 1;
+            document.getElementById('noteTitle').value = '';
+            document.getElementById('noteContent').value = '';
+            saveUserData();
+            loadNotes();
+            checkBadges();
+        }
+
+        function selectNote(idx) {
+            gameState.currentNoteId = idx;
+            const note = gameState.notes[idx];
+            document.getElementById('noteTitle').value = note.title;
+            document.getElementById('noteContent').value = note.content;
+            loadNotes();
+        }
+
+        function saveNotes() {
+            if (gameState.currentNoteId !== null && gameState.autoSave) {
+                const note = gameState.notes[gameState.currentNoteId];
+                note.title = document.getElementById('noteTitle').value;
+                note.content = document.getElementById('noteContent').value;
+                note.date = Date.now();
+            }
+            saveUserData();
+            loadNotes();
+        }
+
+        document.getElementById('noteTitle')?.addEventListener('input', saveNotes);
+        document.getElementById('noteContent')?.addEventListener('input', saveNotes);
+
+        function loadTodos() {
+            const list = document.getElementById('todoList');
+            
+            if (gameState.todos.length === 0) {
+                list.innerHTML = '<li class="todo-item">No tasks yet!</li>';
+                return;
+            }
+            
+            list.innerHTML = gameState.todos.map((todo, idx) => `
+                <li class="todo-item ${todo.completed ? 'completed' : ''}">
+                    <input type="checkbox" ${todo.completed ? 'checked' : ''} onchange="toggleTodo(${idx})">
+                    <span class="todo-text">${todo.text}</span>
+                    <button class="btn" onclick="deleteTodo(${idx})" style="padding: 5px 10px;">🗑️</button>
+                </li>
+            `).join('');
+        }
+
+        function addTodo() {
+            const input = document.getElementById('todoInput');
+            const text = input.value.trim();
+            
+            if (text) {
+                gameState.todos.push({ text, completed: false, date: Date.now() });
+                input.value = '';
+                saveUserData();
+                loadTodos();
+            }
+        }
+
+        function toggleTodo(idx) {
+            gameState.todos[idx].completed = !gameState.todos[idx].completed;
+            saveUserData();
+            loadTodos();
+            checkBadges();
+        }
+
+        function deleteTodo(idx) {
+            gameState.todos.splice(idx, 1);
+            saveUserData();
+            loadTodos();
+        }
+
+        document.getElementById('todoInput')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') addTodo();
+        });
+
+        function updateTimeTracker() {
+            const elapsed = Date.now() - gameState.startTime;
+            const totalSeconds = Math.floor(elapsed / 1000);
+            
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            
+            const display = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            document.getElementById('timeDisplay').textContent = display;
+            document.getElementById('todayTime').textContent = `${hours}h ${minutes}m`;
+        }
+
+        setInterval(updateTimeTracker, 1000);
+
+        function showSettings() {
+            document.getElementById('settingsModal').classList.add('show');
+            document.getElementById('darkModeToggle').checked = gameState.theme === 'dark';
+            document.getElementById('soundToggle').checked = gameState.soundEnabled;
+            document.getElementById('notifToggle').checked = gameState.notificationsEnabled;
+            document.getElementById('autoSaveToggle').checked = gameState.autoSave;
+            document.getElementById('languageSelect').value = gameState.language;
+            document.getElementById('difficultySelect').value = gameState.difficulty;
+            document.getElementById('reminderSelect').value = gameState.reminder;
+            document.getElementById('fontSizeSelect').value = gameState.fontSize;
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme');
+            const newTheme = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            gameState.theme = newTheme;
+            saveUserData();
+        }
+
+        function toggleSound() {
+            gameState.soundEnabled = !gameState.soundEnabled;
+            saveUserData();
+        }
+
+        function toggleNotifSettings() {
+            gameState.notificationsEnabled = !gameState.notificationsEnabled;
+            saveUserData();
+        }
+
+        function toggleAutoSave() {
+            gameState.autoSave = !gameState.autoSave;
+            saveUserData();
+        }
+
+        function changeLanguage() {
+            gameState.language = document.getElementById('languageSelect').value;
+            saveUserData();
+        }
+
+        function changeDifficulty() {
+            gameState.difficulty = document.getElementById('difficultySelect').value;
+            saveUserData();
+        }
+
+        function setReminder() {
+            gameState.reminder = document.getElementById('reminderSelect').value;
+            saveUserData();
+        }
+
+        function changeFontSize() {
+            gameState.fontSize = document.getElementById('fontSizeSelect').value;
+            saveUserData();
+            
+            const sizes = { small: '14px', medium: '16px', large: '18px' };
+            document.body.style.fontSize = sizes[gameState.fontSize];
+        }
+
+        function resetProgress() {
+            if (confirm('Are you sure? This will delete all your progress!')) {
+                const user = users[currentUser];
+                if (user) {
+                    user.gameState = null;
+                    users[currentUser] = user;
+                    localStorage.setItem('users', JSON.stringify(users));
+                }
+                location.reload();
+            }
+        }
+
+        function exportData() {
+            const data = {
+                notes: gameState.notes,
+                todos: gameState.todos,
+                level: gameState.level,
+                totalXP: gameState.totalXP,
+                quizzesCompleted: gameState.quizzesCompleted,
+                earnedBadges: gameState.earnedBadges
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'learning-quest-data.json';
+            a.click();
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        function init() {
+            document.documentElement.setAttribute('data-theme', gameState.theme);
+            document.getElementById('classDisplay').innerHTML = `📚 Class ${gameState.selectedClass}`;
+            document.getElementById('userLevel').textContent = gameState.level;
+            document.getElementById('currentXP').textContent = gameState.currentXP;
+            document.getElementById('maxXP').textContent = gameState.maxXP;
+            document.getElementById('totalXP').textContent = gameState.totalXP;
+            document.getElementById('streak').textContent = gameState.streak;
+            document.getElementById('quizzesCompleted').textContent = gameState.quizzesCompleted;
+            
+            loadSubjects();
+            loadStudyMaterials();
+            loadNotes();
+            loadTodos();
+            updateTimeTracker();
+            updateXPBar();
+            renderLeaderboard();
+            updateNotificationBadge();
+            renderNotifications();
+            checkBadges();
+            
+            const sizes = { small: '14px', medium: '16px', large: '18px' };
+            document.body.style.fontSize = sizes[gameState.fontSize];
+            
+            if (gameState.notifications.length === 0) {
+                addNotification('👋 Welcome!', 'Welcome to Rural Learning Quest! Start learning and earn badges!', 'info');
+            }
+            
+            checkAuth();
+        }
+
+        init();
+    </script>
+</body>
+</html>
